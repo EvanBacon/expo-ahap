@@ -15,7 +15,7 @@ public class AhapModule: Module {
         
         
         // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-        Function("hello") { (patternDict: [CHHapticPattern.Key: Any]) in
+        Function("playAhap") { (patternDict: [CHHapticPattern.Key: Any]) in
             do {
                 if engine == nil {
                     engine = try CHHapticEngine(audioSession: .sharedInstance())
