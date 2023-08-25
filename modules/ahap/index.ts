@@ -264,7 +264,7 @@ export class Player {
   }
 
   get loopEnabled(): boolean {
-    return AhapModule.isLoopEnabled(this.id);
+    return AhapModule.getLoopEnabled(this.id);
   }
   set loopEnabled(value: boolean) {
     AhapModule.setLoopEnabled(this.id, value);

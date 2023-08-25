@@ -34,65 +34,68 @@ function useCustomPlayer() {
   );
   React.useEffect(() => {
     if (!audioName) return;
-    setPlayer(
-      new Ahap.Player({
-        Pattern: [
-          {
-            Event: {
-              Time: 0.0,
-              EventType: "HapticContinuous",
-              EventDuration: 0.6,
-              EventParameters: [
-                { ParameterID: "HapticIntensity", ParameterValue: 1.0 },
-                { ParameterID: "HapticSharpness", ParameterValue: 0.5 },
-              ],
-            },
+    const player = new Ahap.Player({
+      Pattern: [
+        {
+          Event: {
+            Time: 0.0,
+            EventType: "HapticContinuous",
+            EventDuration: 0.6,
+            EventParameters: [
+              { ParameterID: "HapticIntensity", ParameterValue: 1.0 },
+              { ParameterID: "HapticSharpness", ParameterValue: 0.5 },
+            ],
           },
-          {
-            ParameterCurve: {
-              ParameterID: "HapticIntensityControl",
-              Time: 0.0,
-              ParameterCurveControlPoints: [
-                { Time: 0, ParameterValue: 0.2 },
-                { Time: 0.6, ParameterValue: 0.7 },
-                { Time: 0.601, ParameterValue: 1.0 },
-              ],
-            },
+        },
+        {
+          ParameterCurve: {
+            ParameterID: "HapticIntensityControl",
+            Time: 0.0,
+            ParameterCurveControlPoints: [
+              { Time: 0, ParameterValue: 0.2 },
+              { Time: 0.6, ParameterValue: 0.7 },
+              { Time: 0.601, ParameterValue: 1.0 },
+            ],
           },
-          {
-            ParameterCurve: {
-              ParameterID: "HapticSharpnessControl",
-              Time: 0.0,
-              ParameterCurveControlPoints: [
-                { Time: 0, ParameterValue: -0.5 },
-                { Time: 0.6, ParameterValue: 0.5 },
-              ],
-            },
+        },
+        {
+          ParameterCurve: {
+            ParameterID: "HapticSharpnessControl",
+            Time: 0.0,
+            ParameterCurveControlPoints: [
+              { Time: 0, ParameterValue: -0.5 },
+              { Time: 0.6, ParameterValue: 0.5 },
+            ],
           },
+        },
 
-          {
-            Event: {
-              Time: 0.601,
-              EventType: "HapticTransient",
-              EventParameters: [
-                { ParameterID: "HapticIntensity", ParameterValue: 1.0 },
-                { ParameterID: "HapticSharpness", ParameterValue: 0.7 },
-              ],
-            },
+        {
+          Event: {
+            Time: 0.601,
+            EventType: "HapticTransient",
+            EventParameters: [
+              { ParameterID: "HapticIntensity", ParameterValue: 1.0 },
+              { ParameterID: "HapticSharpness", ParameterValue: 0.7 },
+            ],
           },
-          {
-            Event: {
-              Time: 0.0,
-              EventType: "AudioCustom",
-              EventWaveformPath: audioName,
-              EventParameters: [
-                { ParameterID: "AudioVolume", ParameterValue: 0.75 },
-              ],
-            },
+        },
+        {
+          Event: {
+            Time: 0.0,
+            EventType: "AudioCustom",
+            EventWaveformPath: audioName,
+            EventParameters: [
+              { ParameterID: "AudioVolume", ParameterValue: 0.4 },
+            ],
           },
-        ],
-      })
-    );
+        },
+      ],
+    });
+    setPlayer(player);
+    return () => {
+      player?.unregister?.();
+      setPlayer(null);
+    };
   }, [audioName]);
 
   return player;
@@ -111,6 +114,13 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Text
+        onPress={() => {
+          player.loopEnabled = !player.loopEnabled;
+        }}
+      >
+        Loop
+      </Text>
       <Text onPress={() => play()}>
         Open up App.js to start working on your app!
       </Text>
