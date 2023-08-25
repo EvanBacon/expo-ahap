@@ -46,6 +46,8 @@ public class AhapModule: Module {
         // The module will be accessible from `requireNativeModule('Ahap')` in JavaScript.
         Name("Ahap")
         
+        Events(["finished"])
+        
         // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
         Function("register") { (name: String, patternDict: [CHHapticPattern.Key: Any]) in
             startEngine()
@@ -54,6 +56,13 @@ public class AhapModule: Module {
                 // Create a pattern from the dictionary.
                 let pattern = try CHHapticPattern(dictionary: patternDict)
                 let player = try? engine.makeAdvancedPlayer(with: pattern)
+                player?.completionHandler = { (error) in
+                    if let error = error {
+                        print("Finished with error: \(error)")
+                    }
+                    self.sendEvent("finished", ["name": name])
+                    
+                }
                 players[name] = player
             }
         }

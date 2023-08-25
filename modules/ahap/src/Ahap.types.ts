@@ -1,5 +1,5 @@
 export type ChangeEventPayload = {
-  value: string;
+  name: string;
 };
 
 export type AhapViewProps = {

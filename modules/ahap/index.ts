@@ -233,9 +233,27 @@ type AhapType = {
 
 export class Player {
   private id = Math.random().toString();
+  private subscription: Subscription;
+
+  private subscribers: Set<() => void> = new Set();
 
   constructor(pattern: AhapType) {
     AhapModule.register(this.id, pattern);
+
+    this.subscription = addChangeListener((event) => {
+      if (event.name === this.id) {
+        for (const subscriber of this.subscribers) {
+          subscriber();
+        }
+      }
+    });
+  }
+
+  addEventListener(callback: () => void) {
+    this.subscribers.add(callback);
+    return () => {
+      this.subscribers.delete(callback);
+    };
   }
 
   get isMuted(): boolean {
@@ -283,6 +301,7 @@ export class Player {
   }
   unregister() {
     AhapModule.unregister(this.id);
+    this.subscription.remove();
   }
 
   sendParameters(params: unknown[], time?: number) {
@@ -361,7 +380,7 @@ const emitter = new EventEmitter(AhapModule ?? NativeModulesProxy.Ahap);
 export function addChangeListener(
   listener: (event: ChangeEventPayload) => void
 ): Subscription {
-  return emitter.addListener<ChangeEventPayload>("onChange", listener);
+  return emitter.addListener<ChangeEventPayload>("finished", listener);
 }
 
 export { AhapViewProps, ChangeEventPayload };

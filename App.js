@@ -787,6 +787,9 @@ const player = new Ahap.Player({
 });
 
 export default function App() {
+  player.addEventListener(() => {
+    console.log("done");
+  });
   const play = React.useCallback(() => {
     player.start();
   }, []);
