@@ -199,29 +199,5 @@ public class AhapModule: Module {
             }
         }
         
-        // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-        Function("playAhap") { (patternDict: [CHHapticPattern.Key: Any]) in
-            startEngine()
-            
-            if let engine = engine {
-                // Start the haptic engine to prepare it for use.
-                do {
-                    try engine.start()
-                } catch let error {
-                    print("The engine failed to start with error: \(error)")
-                }
-                
-                // Create a pattern from the dictionary.
-                let pattern = try CHHapticPattern(dictionary: patternDict)
-                let player = try? engine.makeAdvancedPlayer(with: pattern)
-                
-                do {
-                    try player?.start(atTime: CHHapticTimeImmediate)
-                } catch let error {
-                    print("Error starting haptic player: \(error)")
-                }
-            }
-        }
-        
     }
 }

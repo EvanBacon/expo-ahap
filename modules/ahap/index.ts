@@ -7,10 +7,7 @@ import {
 // Import the native module. On web, it will be resolved to Ahap.web.ts
 // and on native platforms to Ahap.ts
 import AhapModule from "./src/AhapModule";
-import { ChangeEventPayload, AhapViewProps } from "./src/Ahap.types";
-
-// Get the native constant value.
-export const PI = AhapModule.PI;
+import { ChangeEventPayload } from "./src/Ahap.types";
 
 /**
  * Parameters used to modify individual haptic and/or audio events.
@@ -18,7 +15,7 @@ export const PI = AhapModule.PI;
  * Event parameters are specified as part of the creation of a CHHapticEvent or in an event definition in a haptic pattern.
  * The combination of Event parameters will determine the character of the haptic or audio event.
  */
-type CHHapticEventParameterID =
+export type CHHapticEventParameterID =
   /**
    * The perceived intensity (volume) of a haptic event.
    * Range: 0.0 (maximum attenuation) to 1.0 (no attenuation).
@@ -94,7 +91,7 @@ type CHHapticEventParameterID =
  * The `CHHapticDynamicParameterIDHaptic` types only affect haptic event types, and the `CHHapticDynamicParameterIDAudio`
  * types only affect audio event types.  Not all `CHHapticDynamicParameterID`s will have an effect on every `CHHapticEventType`.
  */
-type CHHapticDynamicParameterID =
+export type CHHapticDynamicParameterID =
   /**
    * Adjusts the intensity of all active and future haptic events.
    * @range 0.0 (event intensities reduced by the maximum amount) to 1.0 (no effect on event intensities).
@@ -182,17 +179,17 @@ type CHHapticDynamicParameterID =
    */
   | "AudioReleaseTimeControl";
 
-type AhapEventPatternValue = {
+export type AhapEventPatternValue = {
   ParameterID: CHHapticEventParameterID;
   ParameterValue: number;
 };
 
-type AhapParameterCurveControlPoints = {
+export type AhapParameterCurveControlPoints = {
   Time: number;
   ParameterValue: number;
 };
 
-type AhapEventPattern = {
+export type AhapEventPattern = {
   Event:
     | {
         EventType: "HapticContinuous";
@@ -213,7 +210,7 @@ type AhapEventPattern = {
       };
 };
 
-type AhapParameterCurvePattern = {
+export type AhapParameterCurvePattern = {
   ParameterCurve: {
     ParameterID: CHHapticDynamicParameterID;
     Time: number;
@@ -221,7 +218,7 @@ type AhapParameterCurvePattern = {
   };
 };
 
-type AhapType = {
+export type AhapType = {
   Version?: 1.0;
   Metadata?: {
     Project: string;
@@ -324,68 +321,10 @@ export class Player {
   }
 }
 
-export function playAhap(ahap: AhapType) {
-  AhapModule.playAhap(ahap);
-
-  // return AhapModule.hello(
-  //   {
-  //     "Version": 1.0,
-  //     "Metadata":
-  //         {
-  //             "Project" : "HapticRicochet",
-  //             "Created" : "1 June 2021",
-  //             "Description" : "Effect for adding a shield to the ball using an continuous event."
-  //         },
-  //     "Pattern":
-  //     [
-  //         {
-  //             "Event":
-  //             {
-  //                 "Time": 0.0,
-  //                 "EventType": "HapticContinuous",
-  //                 "EventDuration": 0.5,
-  //                 "EventParameters":
-  //                 [
-  //                     { "ParameterID": "HapticIntensity", "ParameterValue": 1.0 },
-  //                     { "ParameterID": "HapticSharpness", "ParameterValue": 0.5 }
-  //                 ]
-  //             }
-  //         },
-  //         {
-  //             "ParameterCurve":
-  //             {
-  //                 "ParameterID": "HapticIntensityControl",
-  //                 "Time": 0.0,
-  //                 "ParameterCurveControlPoints":
-  //                 [
-  //                     { "Time": 0, "ParameterValue": 0.0 },
-  //                     { "Time": 0.5, "ParameterValue": 0.75 }
-  //                 ]
-  //             }
-  //         },
-  //         {
-  //             "Event":
-  //             {
-  //                 "Time":0.0,
-  //                 "EventType":"AudioCustom",
-  //                 "EventWaveformPath":"ShieldA.wav",
-  //                 "EventParameters":
-  //                 [
-  //                     {"ParameterID":"AudioVolume","ParameterValue":0.75}
-  //                 ]
-  //             }
-  //         }
-  //     ]
-  // }
-  // );
-}
-
 const emitter = new EventEmitter(AhapModule ?? NativeModulesProxy.Ahap);
 
-export function addChangeListener(
+function addChangeListener(
   listener: (event: ChangeEventPayload) => void
 ): Subscription {
   return emitter.addListener<ChangeEventPayload>("finished", listener);
 }
-
-export { AhapViewProps, ChangeEventPayload };

@@ -1,0 +1,20 @@
+{
+  "name": "expo-ahap",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evanbacon/expo-ahap.git",
+    "directory": "packages/expo-ahap"
+  },
+  "bugs": {
+    "url": "https://github.com/evanbacon/expo-ahap/issues"
+  },
+  "author": "Evan Bacon",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["expo", "react", "apple"],
+  "license": "ISC"
+}
