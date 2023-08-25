@@ -318,6 +318,7 @@ export class Player {
 
 export function playAhap(ahap: AhapType) {
   AhapModule.playAhap(ahap);
+
   // return AhapModule.hello(
   //   {
   //     "Version": 1.0,
@@ -369,10 +370,6 @@ export function playAhap(ahap: AhapType) {
   //     ]
   // }
   // );
-}
-
-export async function setValueAsync(value: string) {
-  return await AhapModule.setValueAsync(value);
 }
 
 const emitter = new EventEmitter(AhapModule ?? NativeModulesProxy.Ahap);
