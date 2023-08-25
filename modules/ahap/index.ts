@@ -304,7 +304,15 @@ export class Player {
     this.subscription.remove();
   }
 
-  sendParameters(params: unknown[], time?: number) {
+  sendParameters(
+    params: {
+      ParameterID: CHHapticDynamicParameterID;
+      ParameterValue: number;
+      /** Relative time */
+      Time: number;
+    }[],
+    time?: number
+  ) {
     AhapModule.send(this.id, params, time);
   }
 

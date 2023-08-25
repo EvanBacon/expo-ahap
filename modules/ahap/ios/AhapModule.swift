@@ -21,6 +21,18 @@ struct Curve: Record {
 }
 
 
+struct Send: Record {
+    @Field
+    var ParameterID: String
+    
+    @Field
+    var Time: Float = 0
+    
+    @Field
+    var ParameterValue: Double!
+}
+
+
 public class AhapModule: Module {
     var engine: CHHapticEngine?
     var players: [String: CHHapticAdvancedPatternPlayer] = [:]
@@ -104,10 +116,12 @@ public class AhapModule: Module {
         }
         
         // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-        Function("send") { (name: String, params: [CHHapticDynamicParameter], time: TimeInterval?) in
+        Function("send") { (name: String, params: [Send], time: TimeInterval?) in
             if let player = players[name] {
                 do {
-                    try player.sendParameters(params, atTime: time ?? CHHapticTimeImmediate)
+                    try player.sendParameters(params.map({ send in
+                        return CHHapticDynamicParameter.init(parameterID: CHHapticDynamicParameter.ID(rawValue: send.ParameterID), value: Float(send.ParameterValue), relativeTime: TimeInterval(send.Time))
+                    }), atTime: time ?? CHHapticTimeImmediate)
                 } catch let error {
                     print("Error starting haptic player: \(error)")
                 }

@@ -4,7 +4,7 @@ import * as Ahap from "local:ahap";
 import React from "react";
 import * as FS from "expo-file-system";
 import { Asset } from "expo-asset";
-
+import textureAhap from "./haptics/texture.json";
 function useAudioInDocumentsDir(res) {
   const [audioName, setName] = React.useState<string | null>(null);
 
@@ -30,7 +30,8 @@ function useAudioInDocumentsDir(res) {
 function useCustomPlayer() {
   const [player, setPlayer] = React.useState<Ahap.Player>(null);
   const audioName = useAudioInDocumentsDir(
-    require("./haptics/thing1/altitude_open.mp3")
+    require("./Spawn.wav")
+    // require("./haptics/thing1/altitude_open.mp3")
   );
   React.useEffect(() => {
     if (!audioName) return;
@@ -101,12 +102,30 @@ function useCustomPlayer() {
   return player;
 }
 
+function useStandardPlayer(ahap) {
+  const player = React.useRef(new Ahap.Player(ahap)).current;
+
+  React.useEffect(() => {
+    return () => {
+      player?.unregister?.();
+    };
+  }, []);
+  return player;
+}
+
 export default function App() {
   const player = useCustomPlayer();
+  const texturePlayer = useStandardPlayer(textureAhap);
 
   // player.addEventListener(() => {
   //   console.log("done");
   // });
+
+  React.useEffect(() => {
+    // texturePlayer.playbackRate = 2;
+    texturePlayer.loopEnabled = true;
+    texturePlayer.start();
+  }, []);
 
   const play = React.useCallback(() => {
     player?.start();
@@ -114,6 +133,45 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Text
+        onPress={() => {
+          texturePlayer.sendParameters(
+            [
+              {
+                ParameterID: "HapticIntensityControl",
+                ParameterValue: 0.45,
+                Time: 0,
+              },
+            ],
+            0
+          );
+        }}
+      >
+        Texture high
+      </Text>
+      <Text
+        onPress={() => {
+          texturePlayer.sendParameters(
+            [
+              {
+                ParameterID: "HapticIntensityControl",
+                ParameterValue: 0,
+                Time: 0,
+              },
+            ],
+            0
+          );
+        }}
+      >
+        Texture low
+      </Text>
+      <Text
+        onPress={() => {
+          texturePlayer.stop();
+        }}
+      >
+        Stop texture
+      </Text>
       <Text
         onPress={() => {
           player.loopEnabled = !player.loopEnabled;
